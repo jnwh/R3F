@@ -1,7 +1,8 @@
 import { Canvas, extend, ReactThreeFiber, useThree } from "@react-three/fiber";
 import "./App.css";
-import { Box, Bulb, Floor } from "./components";
+import { Background, Box, Bulb, Floor } from "./components";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Suspense } from "react";
 extend({ OrbitControls });
 
 declare global {
@@ -26,16 +27,19 @@ const App = () => {
       <Canvas
         shadows
         style={{ background: "black" }}
-        camera={{ position: [1, 5, 1] }}
+        camera={{ position: [3, 3, 3] }}
       >
-        <fog attach="fog" args={["white", 1, 10]} />
-        <ambientLight intensity={0.2} />
-        <directionalLight color="white" position={[0, 0, 5]} />
-        <Bulb position={[0, 3, 0]} />
-        <Box position={[0, 1, 0]} />
-        <Floor position={[0, -0.5, 0]} />
-        <Orbit />
-        <axesHelper args={[3]} />
+        {/* <fog attach="fog" args={["white", 1, 10]} /> */}
+        <Suspense fallback={null}>
+          <ambientLight intensity={0.2} />
+          <directionalLight color="white" position={[0, 0, 5]} />
+          <Bulb position={[0, 3, 0]} />
+          <Box position={[0, 1, 0]} />
+          <Floor position={[0, -0.5, 0]} />
+          <Orbit />
+          <axesHelper args={[3]} />
+          <Background />
+        </Suspense>
       </Canvas>
     </div>
   );
