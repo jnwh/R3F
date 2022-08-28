@@ -1,12 +1,6 @@
-import {
-  Canvas,
-  extend,
-  MeshProps,
-  ReactThreeFiber,
-  useThree,
-} from "@react-three/fiber";
+import { Canvas, extend, ReactThreeFiber, useThree } from "@react-three/fiber";
 import "./App.css";
-import { Box } from "./components";
+import { Box, Bulb, Floor } from "./components";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 extend({ OrbitControls });
 
@@ -24,25 +18,6 @@ declare global {
 const Orbit = () => {
   const { camera, gl } = useThree();
   return <orbitControls args={[camera, gl.domElement]} />;
-};
-
-const Floor = (props: MeshProps) => {
-  return (
-    <mesh {...props} receiveShadow>
-      <boxBufferGeometry args={[20, 1, 20]} />
-      <meshStandardMaterial />
-    </mesh>
-  );
-};
-
-const Bulb = (props: MeshProps) => {
-  return (
-    <mesh {...props}>
-      <pointLight castShadow />
-      <sphereBufferGeometry args={[0.2]} />
-      <meshPhongMaterial emissive="yellow" />
-    </mesh>
-  );
 };
 
 const App = () => {
