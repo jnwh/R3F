@@ -1,45 +1,63 @@
-import { Canvas, extend, ReactThreeFiber, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import "./App.css";
-import { Background, Box, Bulb, Floor } from "./components";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import {
+  Background,
+  Box,
+  Bulb,
+  ColorPicker,
+  Drag,
+  Floor,
+  Orbit,
+  Model,
+} from "./components";
 import { Suspense } from "react";
-extend({ OrbitControls });
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      orbitControls: ReactThreeFiber.Object3DNode<
-        OrbitControls,
-        typeof OrbitControls
-      >;
-    }
-  }
-}
-
-const Orbit = () => {
-  const { camera, gl } = useThree();
-  return <orbitControls args={[camera, gl.domElement]} />;
-};
+import {
+  EffectComposer,
+  DepthOfField,
+  Bloom,
+  Noise,
+  Vignette,
+} from "@react-three/postprocessing";
+import { OrthographicCamera } from "@react-three/drei";
 
 const App = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <Canvas
-        shadows
-        style={{ background: "black" }}
-        camera={{ position: [3, 3, 3] }}
-      >
+      <ColorPicker />
+      <Canvas shadows style={{ background: "black" }}>
         {/* <fog attach="fog" args={["white", 1, 10]} /> */}
+        <ambientLight intensity={0.7} />
+        {/* <directionalLight color="white" intensity={0.1} position={[0, 30, 5]} /> */}
+        <Bulb position={[-100, 50, 0]} />
+        <Drag children={<></>} />
         <Suspense fallback={null}>
-          <ambientLight intensity={0.2} />
-          <directionalLight color="white" position={[0, 0, 5]} />
-          <Bulb position={[0, 3, 0]} />
           <Box position={[0, 1, 0]} />
-          <Floor position={[0, -0.5, 0]} />
-          <Orbit />
-          <axesHelper args={[3]} />
-          <Background />
         </Suspense>
+        <Suspense fallback={null}>
+          <Box position={[4, 1, 0]} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Model />
+        </Suspense>
+        <Floor position={[0, -11, 0]} />
+        <Orbit attach="orbitControls" />
+        <axesHelper args={[100]} />
+        <Background />
+        <EffectComposer>
+          <DepthOfField
+            focusDistance={0}
+            focalLength={10}
+            bokehScale={3}
+            height={480}
+          />
+          <Bloom
+            luminanceThreshold={0.4}
+            luminanceSmoothing={1}
+            height={1000}
+          />
+          <Noise opacity={0.02} />
+          <Vignette eskil={false} offset={0.1} darkness={0.5} />
+        </EffectComposer>
       </Canvas>
     </div>
   );
